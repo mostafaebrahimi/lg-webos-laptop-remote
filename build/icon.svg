@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b2432"/>
+      <stop offset="1" stop-color="#0d1016"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#6aa6ff"/>
+      <stop offset="1" stop-color="#3f7fe0"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="14" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+
+  <!-- television -->
+  <rect x="86" y="112" width="340" height="212" rx="20" fill="url(#screen)" filter="url(#glow)"/>
+  <rect x="106" y="132" width="300" height="172" rx="10" fill="#0d1016" opacity="0.82"/>
+
+  <!-- cursor on the screen: the pointer this app gives you -->
+  <path d="M214 176 L214 268 L238 246 L253 281 L271 273 L256 238 L288 236 Z"
+        fill="#e7e9ee" stroke="#0d1016" stroke-width="7" stroke-linejoin="round"/>
+
+  <!-- stand -->
+  <rect x="232" y="324" width="48" height="34" fill="#6aa6ff"/>
+  <rect x="166" y="358" width="180" height="22" rx="11" fill="#6aa6ff"/>
+
+  <!-- keyboard: the laptop half of the story -->
+  <g fill="#6aa6ff" opacity="0.95">
+    <rect x="120" y="404" width="42" height="26" rx="7"/>
+    <rect x="174" y="404" width="42" height="26" rx="7"/>
+    <rect x="228" y="404" width="42" height="26" rx="7"/>
+    <rect x="282" y="404" width="42" height="26" rx="7"/>
+    <rect x="336" y="404" width="56" height="26" rx="7"/>
+  </g>
+</svg>

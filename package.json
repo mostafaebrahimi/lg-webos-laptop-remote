@@ -1,0 +1,207 @@
+{
+  "name": "lg-webos-laptop-remote",
+  "version": "1.0.0",
+  "description": "Control an LG webOS television from a Linux, macOS or Windows laptop: remote, pointer, keyboard text input, apps, inputs, DLNA streaming and screen capture. Local only.",
+  "main": "out/main/index.js",
+  "author": {
+    "name": "mostafaebrahimi",
+    "email": "mostafaebrahimi.me@gmail.com"
+  },
+  "license": "MIT",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "start": "electron-vite preview",
+    "build": "npm run typecheck && electron-vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "package": "npm run build && electron-builder",
+    "package:linux": "npm run build && electron-builder --linux",
+    "package:win": "npm run build && electron-builder --win",
+    "package:mac": "npm run build && electron-builder --mac",
+    "test:e2e": "node scripts/e2e.mjs",
+    "dev:debug": "electron-vite build && electron . --remote-debugging-port=9222"
+  },
+  "dependencies": {
+    "lgtv2": "^2.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^2.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  },
+  "build": {
+    "appId": "dev.mostafaebrahimi.tvremote",
+    "productName": "LG webOS Laptop Remote",
+    "copyright": "Copyright © 2026 mostafaebrahimi",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "out/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "node_modules/lgtv2/**",
+      "node_modules/ws/**"
+    ],
+    "linux": {
+      "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icons",
+      "category": "AudioVideo;Video;TV",
+      "maintainer": "mostafaebrahimi <mostafaebrahimi.me@gmail.com>",
+      "vendor": "mostafaebrahimi",
+      "synopsis": "Local remote control for LG webOS televisions",
+      "description": "Control an LG webOS television from your laptop over the local network: remote buttons, a trackpad for the TV cursor, keyboard text input, app launching, input switching, DLNA streaming and screen capture. No cloud service or account.",
+      "desktop": {
+        "entry": {
+          "Name": "LG webOS Laptop Remote",
+          "Comment": "Control your LG TV from the laptop keyboard",
+          "Keywords": "tv;remote;lg;webos;control;",
+          "StartupWMClass": "lg-webos-laptop-remote"
+        }
+      }
+    },
+    "deb": {
+      "depends": [
+        "libgtk-3-0",
+        "libnotify4",
+        "libnss3",
+        "libxss1",
+        "libxtst6",
+        "xdg-utils",
+        "libatspi2.0-0",
+        "libuuid1",
+        "libsecret-1-0"
+      ],
+      "priority": "optional"
+    },
+    "appImage": {
+      "license": "LICENSE"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "build/icon.icns",
+      "category": "public.app-category.utilities",
+      "darkModeSupport": true,
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "extendInfo": {
+        "NSLocalNetworkUsageDescription": "This app talks to your television over the local network.",
+        "NSBonjourServices": [
+          "_ssap._tcp",
+          "_webos._tcp"
+        ],
+        "LSMinimumSystemVersion": "11.0"
+      }
+    },
+    "dmg": {
+      "title": "${productName} ${version}",
+      "contents": [
+        {
+          "x": 140,
+          "y": 200
+        },
+        {
+          "x": 400,
+          "y": 200,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "LG webOS Laptop Remote"
+    },
+    "portable": {
+      "artifactName": "${name}-${version}-windows-portable.${ext}"
+    },
+    "artifactName": "${name}-${version}-${os}-${arch}.${ext}",
+    "extraResources": [
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
+      }
+    ],
+    "npmRebuild": false
+  },
+  "homepage": "https://github.com/mostafaebrahimi/lg-webos-laptop-remote",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mostafaebrahimi/lg-webos-laptop-remote.git"
+  },
+  "keywords": [
+    "lg",
+    "webos",
+    "tv",
+    "remote",
+    "electron",
+    "smart-tv",
+    "ssap"
+  ]
+}

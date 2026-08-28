@@ -1,0 +1,123 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to publish the installers under (leave empty to only upload build artifacts)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux
+            os: ubuntu-latest
+            args: --linux
+          - name: macos
+            os: macos-latest
+            args: --mac --x64 --arm64
+          - name: windows
+            os: windows-latest
+            args: --win
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck and build
+        run: npm run build
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Package
+        run: npx electron-builder ${{ matrix.args }} --publish never
+        env:
+          # Signing is optional. Add CSC_LINK (base64 .p12) and CSC_KEY_PASSWORD as
+          # repository secrets to sign macOS builds; WIN_CSC_LINK / WIN_CSC_KEY_PASSWORD
+          # to sign Windows ones. Without them the installers are unsigned and
+          # electron-builder is told not to hunt for a keychain identity.
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          CSC_IDENTITY_AUTO_DISCOVERY: ${{ secrets.CSC_LINK != '' }}
+          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            release/*.AppImage
+            release/*.deb
+            release/*.dmg
+            release/*.zip
+            release/*.exe
+            release/*.blockmap
+
+  release:
+    name: Publish release
+    needs: package
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/') || github.event.inputs.tag != ''
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download installers
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: List what will be published
+        run: ls -lh artifacts
+
+      - name: Write the release notes
+        run: |
+          cat > notes.md <<'NOTES'
+          Desktop builds for Linux, macOS and Windows.
+
+          | Platform | Download |
+          | --- | --- |
+          | Linux | `.AppImage` (portable) or `.deb` |
+          | macOS | `.dmg` — `-arm64` for Apple Silicon, `-x64` for Intel |
+          | Windows | `-win-x64.exe` installer, or `-windows-portable.exe` |
+
+          The installers are **not code-signed**.
+          macOS: open it the first time with right-click -> Open, or run
+          `xattr -dr com.apple.quarantine "/Applications/LG webOS Laptop Remote.app"`.
+          Windows: SmartScreen -> More info -> Run anyway.
+          NOTES
+
+      - name: Create or update the GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" artifacts/* --clobber
+          else
+            gh release create "$TAG" artifacts/* --title "$TAG" --notes-file notes.md
+          fi
