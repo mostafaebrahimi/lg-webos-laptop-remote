@@ -1,20 +1,69 @@
-# LG webOS Laptop Remote
+<div align="center">
+
+<img src="docs/assets/banner.png" alt="LG webOS Laptop Remote" width="840">
 
 [![CI](https://github.com/mostafaebrahimi/lg-webos-laptop-remote/actions/workflows/ci.yml/badge.svg)](https://github.com/mostafaebrahimi/lg-webos-laptop-remote/actions/workflows/ci.yml)
 [![Release](https://github.com/mostafaebrahimi/lg-webos-laptop-remote/actions/workflows/release.yml/badge.svg)](https://github.com/mostafaebrahimi/lg-webos-laptop-remote/actions/workflows/release.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20macOS%20%7C%20Windows-2f6feb)](#download)
+[![Electron](https://img.shields.io/badge/Electron-33-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/)
+[![License](https://img.shields.io/badge/license-MIT-6aa6ff)](LICENSE)
 
-A local-only desktop remote for LG televisions running webOS. Control the TV from a
-Linux, macOS or Windows laptop over the LAN — no cloud service, no account, no
-telemetry. The app talks directly to the television's own SSAP WebSocket, the same
-protocol LG's phone remote uses.
+**[Download](#download)**&nbsp; · &nbsp;**[Setup](#setup)**&nbsp; · &nbsp;**[Features](#features)**&nbsp; · &nbsp;**[Troubleshooting](#troubleshooting)**&nbsp; · &nbsp;**[Build from source](#building-from-source)**
 
-- **Remote:** D-pad, OK, Home/Back, volume, channels, media transport, power, sleep timer
-- **Trackpad:** the laptop touchpad drives the TV cursor, with click, scroll and adjustable speed
-- **Typing:** one input box that routes itself — a focused TV field, an app's own on-screen keyboard, or a YouTube deep link
-- **Streaming:** play a local video or audio file on the TV over DLNA, with seek and automatic remux/transcode
-- **Screen:** capture the TV picture, watch it live at 1 fps, record to MP4 or GIF
-- **Apps, inputs, scenes, snippets, a command palette and a tray menu**
+</div>
+
+---
+
+Control an LG television running webOS from a Linux, macOS or Windows laptop. The app
+speaks the TV's own SSAP WebSocket protocol directly — the same one LG's phone remote
+uses — so nothing sits between your keyboard and the screen across the room. No cloud
+service, no account, no telemetry, no open ports except while you are deliberately
+streaming a file.
+
+<div align="center">
+  <img src="docs/assets/screenshot-remote.png" alt="The Remote tab: navigation, volume, media, power, pointer pad, scenes and the keyboard map" width="900">
+</div>
+
+<br>
+
+| | |
+| --- | --- |
+| ⌨️ **Type on the TV** | One bar that routes itself — a focused webOS field, an app's own on-screen keyboard driven key by key, or a YouTube deep link |
+| 🖱️ **Pointer** | Your touchpad moves the TV cursor: click, scroll, right-click as Back |
+| 📺 **Apps and inputs** | Live app list with real icons, favourites, running badges, HDMI switching |
+| 🎬 **Stream a local file** | DLNA push with seek, and automatic remux or transcode when the TV cannot decode it |
+| 📸 **Screen** | Capture the TV picture, watch it live, record to MP4 or GIF |
+| 🎛️ **Scenes and snippets** | One click for "app plus volume"; reusable strings, secrets held in the OS keyring |
+| ⚡ **Command palette** | `Ctrl+K` for any app, input, scene or action by name |
+| 🔍 **Discovery** | SSDP "Find TVs", several saved televisions, Wake-on-LAN |
+
+### A look around
+
+<table>
+<tr>
+<td width="50%" valign="top">
+<img src="docs/assets/screenshot-text.png" alt="The Text tab">
+<p align="center"><b>Text</b> — one input, three routes, and the app-keyboard page tracker</p>
+</td>
+<td width="50%" valign="top">
+<img src="docs/assets/screenshot-stream.png" alt="The Stream tab">
+<p align="center"><b>Stream</b> — push a local file to the TV over DLNA</p>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<img src="docs/assets/screenshot-settings.png" alt="The Settings tab">
+<p align="center"><b>Settings</b> — key repeat, what OK sends, global shortcuts, TV driver</p>
+</td>
+<td width="50%" valign="top">
+<img src="docs/assets/screenshot-diagnostics.png" alt="The Diagnostics tab">
+<p align="center"><b>Diagnostics</b> — capability map and a report with the address redacted</p>
+</td>
+</tr>
+</table>
+
+<sub>Screenshots taken with the television powered off, which is why the live panels sit
+empty — the app is showing its disconnected state, not a mock-up.</sub>
 
 ---
 
@@ -469,7 +518,23 @@ than the exception — please include model, webOS version and firmware.
 
 ## License
 
-[MIT](LICENSE) © mostafaebrahimi
+[MIT](LICENSE) © mostafaebrahimi — do what you like with it, keep the notice.
 
 Not affiliated with, endorsed by, or connected to LG Electronics. "LG", "webOS" and
 "LG Connect Apps" are trademarks of their respective owners.
+
+---
+
+<div align="center">
+
+<img src="https://github.com/mostafaebrahimi.png" alt="mostafaebrahimi" width="86">
+
+**Mostafa Ebrahimi**
+
+Built because no remote app would let a laptop keyboard type into a television.
+
+[![GitHub](https://img.shields.io/badge/GitHub-mostafaebrahimi-181717?logo=github&logoColor=white)](https://github.com/mostafaebrahimi)
+
+<sub>If this saved you hunting for the remote, a ⭐ on the repo is welcome.</sub>
+
+</div>
