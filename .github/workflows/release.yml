@@ -49,18 +49,29 @@ jobs:
         run: npm test
 
       - name: Package
-        run: npx electron-builder ${{ matrix.args }} --publish never
+        shell: bash
         env:
-          # Signing is optional. Add CSC_LINK (base64 .p12) and CSC_KEY_PASSWORD as
-          # repository secrets to sign macOS builds; WIN_CSC_LINK / WIN_CSC_KEY_PASSWORD
-          # to sign Windows ones. Without them the installers are unsigned and
-          # electron-builder is told not to hunt for a keychain identity.
-          CSC_LINK: ${{ secrets.CSC_LINK }}
-          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-          CSC_IDENTITY_AUTO_DISCOVERY: ${{ secrets.CSC_LINK != '' }}
-          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
-          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Signing is optional. Add CSC_LINK (a base64-encoded .p12) and
+          # CSC_KEY_PASSWORD as repository secrets to sign macOS builds, and
+          # WIN_CSC_LINK / WIN_CSC_KEY_PASSWORD for Windows ones.
+          SIGN_MAC_CERT: ${{ secrets.CSC_LINK }}
+          SIGN_MAC_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          SIGN_WIN_CERT: ${{ secrets.WIN_CSC_LINK }}
+          SIGN_WIN_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          # electron-builder reads CSC_LINK as a file path, so exporting it empty
+          # is worse than leaving it unset: it resolves to the working directory
+          # and the build dies with "not a file". Only export what is actually set.
+          if [ -n "$SIGN_MAC_CERT" ]; then
+            export CSC_LINK="$SIGN_MAC_CERT" CSC_KEY_PASSWORD="$SIGN_MAC_PASSWORD"
+          else
+            export CSC_IDENTITY_AUTO_DISCOVERY=false
+          fi
+          if [ -n "$SIGN_WIN_CERT" ]; then
+            export WIN_CSC_LINK="$SIGN_WIN_CERT" WIN_CSC_KEY_PASSWORD="$SIGN_WIN_PASSWORD"
+          fi
+          npx electron-builder ${{ matrix.args }} --publish never
 
       - name: Upload installers
         uses: actions/upload-artifact@v7

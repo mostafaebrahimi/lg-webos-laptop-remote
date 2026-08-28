@@ -50,6 +50,7 @@
       "output": "release",
       "buildResources": "build"
     },
+    "afterPack": "build/afterPack.js",
     "files": [
       "out/**/*",
       "package.json"
@@ -125,7 +126,7 @@
       "icon": "build/icon.icns",
       "category": "public.app-category.utilities",
       "darkModeSupport": true,
-      "hardenedRuntime": true,
+      "hardenedRuntime": false,
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
